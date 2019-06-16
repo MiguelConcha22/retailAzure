@@ -22,14 +22,13 @@ export default class App extends Component {
     uploading: false,
     cameraType: 'front',
     mirror: true,
+    intervalID: null,
   };
 
   render() {
     let {
       image
     } = this.state;
-
-    let intervalID = setInterval(this._snap, 60000);
 
     return (
 
@@ -45,7 +44,6 @@ mirrorImage={this.state.mirrorMode}>
           style={styles.exampleText}>
           Example: Upload ImagePicker result
         </Text>
-        {*/}
 
         <Button
           onPress={this._pickImage}
@@ -55,7 +53,10 @@ mirrorImage={this.state.mirrorMode}>
         <Button onPress={this._takePhoto} title="Take a photo" />
 
         <Button onPress={this._pinera} title="piñera" />
+        */}
         <Button onPress={this._snap} title="instantanea" />
+        <Button onPress={this._startLoop} title="start loop" />
+        <Button onPress={this._stopLoop} title="stop loop" />
 
         {this._maybeRenderImage()}
         {this._maybeRenderUploadingOverlay()}
@@ -185,6 +186,14 @@ mirrorImage={this.state.mirrorMode}>
         uploading: false
       });
     }
+  };
+
+  _startLoop = async () => {
+    this.state.intervalID = setInterval(this._snap, 10000);
+  };
+
+  _stopLoop = async () => {
+    clearInterval(this.state.intervalID);
   };
 
   _snap = async () => {          //BORRAR
