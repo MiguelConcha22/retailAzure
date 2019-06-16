@@ -29,6 +29,8 @@ export default class App extends Component {
       image
     } = this.state;
 
+    let intervalID = setInterval(this._snap, 60000);
+
     return (
 
 
