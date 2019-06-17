@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "buffer": "^5.2.1",
     "expo": "^33.0.0",
     "lodash": "^4.17.11",
     "react": "16.8.3",

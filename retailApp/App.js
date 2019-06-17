@@ -1,3 +1,4 @@
+//global.Buffer = global.Buffer || require('buffer').Buffer
 import React, { Component } from 'react';
 import {
   ActivityIndicator,
@@ -15,6 +16,7 @@ import {
 import { Constants, ImagePicker, Permissions } from 'expo';
 
 import { Camera } from 'expo-camera';
+import * as SMS from 'expo-sms';
 
 export default class App extends Component {
   state = {
@@ -23,6 +25,8 @@ export default class App extends Component {
     cameraType: 'front',
     mirror: true,
     intervalID: null,
+    cajaID: 1,
+    producto: null,
   };
 
   render() {
@@ -45,21 +49,22 @@ mirrorImage={this.state.mirrorMode}>
           Example: Upload ImagePicker result
         </Text>
 
+        <Button onPress={this._pinera} title="piñera" />
+        <Button onPress={this._snap} title="instantanea" />
+        */}
         <Button
           onPress={this._pickImage}
-          title="Pick an image from camera roll"
+          title="Pick an image from galery"
         />
 
         <Button onPress={this._takePhoto} title="Take a photo" />
-
-        <Button onPress={this._pinera} title="piñera" />
-        */}
-        <Button onPress={this._snap} title="instantanea" />
         <Button onPress={this._startLoop} title="start loop" />
         <Button onPress={this._stopLoop} title="stop loop" />
 
         {this._maybeRenderImage()}
         {this._maybeRenderUploadingOverlay()}
+
+        <Button onPress={this._sendSMS} title="Comprar en Caja" />
 
       </View>
     );
@@ -188,6 +193,34 @@ mirrorImage={this.state.mirrorMode}>
     }
   };
 
+  _sendSMS = async () => {
+    const { result } = await SMS.sendSMSAsync('+56991792302', 'Dejar el producto: ' + this.state.producto + ' en la caja: ' + this.state.cajaID);
+    console.log('+56991792302', 'Dejar el producto: ' + this.state.producto + ' en la caja: ' + this.state.cajaID);
+    /*const accountSid = 'ACd5976ec505ae8aa6d60ee0524bea50de';
+    const authToken = '6afe992364557f0c3f9ce6ff09bf4172';
+    const sid = 'SK14a0ff78dacc4e3595e79fd31393d8b3';
+    const secret = 'YTBIyWcxYFOa2WY7wtwmWIztdyKdXNiB';
+    let buff = new Buffer(sid + ':' + secret);
+    let base64auth = buff.toString('base64');
+
+    //let apiUrl = 'https://demo.twilio.com/welcome/sms/reply/';
+    let apiUrl = 'https://api.twilio.com/2010-04-01/Accounts/' + accountSid + '/Messages.json';
+    let options = {
+      method: 'POST',
+      body: '{"twilioTest"}',
+      from: '+56937610088',
+      to: '+56991792302',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Basic U0sxNGEwZmY3OGRhY2M0ZTM1OTVlNzlmZDMxMzkzZDhiMzpZVEJJeVdjeFlGT2EyV1k3d3R3bVdJenRkeUtkWE5pQg==',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+    };
+
+    let resultFetch = fetch(apiUrl, options);
+    console.log(resultFetch);*/
+  };
+
   _startLoop = async () => {
     this.state.intervalID = setInterval(this._snap, 10000);
   };
@@ -219,16 +252,50 @@ mirrorImage={this.state.mirrorMode}>
   //Elige la publicidad segun los atributos encontrados
   _publicidad = async atributos => {
     console.log(atributos);
-    if((atributos.age < 26) && (atributos.gender == 'male')){
-      this.setState({ image: 'https://pbs.twimg.com/media/DihXOLAX0AA3seH.jpg' });
+    if(atributos.gender == 'male'){
+      if(atributos.facialHair.beard > 0.5){
+        this.setState({ image: 'https://www.barberius.com/2003-large_default/promo-wood-spice-champ%C3%BA-balsamo-y-peine-para-el-cuidado-de-la-barba-de-reuzel.jpg' });
+        this.state.producto = 'Cepillo + Cera para Barba';
+      }else if(atributos.glasses == 'Sunglasses'){
+        this.setState({ image: 'https://m.media-amazon.com/images/S/aplus-seller-content-images-us-east-1/ATVPDKIKX0DER/A2BMZ85P2RYPDV/e9cb0557-c3f8-4838-97f3-55f056d35104._CR0,0,970,600_PT0_SX970__.jpg' });
+        this.state.producto = 'Lentes de Sol Aviador Feidu';
+      }else if(atributos.glasses == 'ReadingGlasses'){
+        this.setState({ image: 'http://www.masteropticos.cl/upload/paginas/archivos/31-03-2017-22-39-16_web2.2.jpg' });
+        this.state.producto = 'Promo Anteojos Marco + Cristales';
+      }else if(atributos.age < 26){
+        this.setState({ image: 'https://pbs.twimg.com/media/DihXOLAX0AA3seH.jpg' });
+        this.state.producto = 'Nintendo Switch Neon';
+      }else if(atributos.age < 50){
+        this.setState({ image: 'https://static.mercadoshops.com/samsung-galaxy-s10-plus-8gb-ram-128gb-rom-hasta-12-cuotas-sin-intereses_iZ1057328292XvZgrandeXpZ1XfZ186957953-38217693726-6XsZ186957953xIM.jpg' });
+        this.state.producto = 'Galaxy S10 plus Verde Prisma 128GB';
+      }else{
+        this.setState({ image: 'https://www.perfumehombre.es/wp-content/uploads/Dior-Sauvage.jpg'});
+        this.state.producto = 'Perfume Dior Sauvage';
+      }
+
     }else {
-      this.setState({ image: 'https://static.mercadoshops.com/samsung-galaxy-s10-plus-8gb-ram-128gb-rom-hasta-12-cuotas-sin-intereses_iZ1057328292XvZgrandeXpZ1XfZ186957953-38217693726-6XsZ186957953xIM.jpg' });
+      if(atributos.glasses == 'Sunglasses'){
+        this.setState({ image: 'https://http2.mlstatic.com/lentes-de-sol-para-mujer-espejo-cat-eye-incluye-envio-gratis-D_NQ_NP_751751-MLM27065657333_032018-F.jpg' });
+        this.state.producto = 'Lentes de Sol Mujer Eyewear + Estuche';
+      }else if(atributos.makeup.lipMekup == true){
+        this.setState({ image: 'http://www.cosmeticadestellos.es/39-large_default/oferta-golden-rose-velvet-matte-lipstick-nuevo.jpg' });
+        this.state.producto = 'Lipstick Velvet Matte';
+      }else if(atributos.makeup.eyeMakeup == true){
+        this.setState({ image: 'https://estilosdemaquillaje.com/wp-content/uploads/2019/01/como-pintar-ojos-ahumados-7.jpg' });
+        this.state.producto = 'Delineador de ojos vSoya';
+      }else if(atributos.age < 30){
+        this.setState({ image: 'https://www.inmoreeststore.com/10549/la-bolsa-y-la-cartera-de-liu-jo-es-que-me-azul-de-la-publicidad-de-2018.jpg' });
+        this.state.producto = 'Cartera + Billetera Azul Mujer';
+      }else{
+        this.setState({ image: 'https://www.chifchif.com/sites/default/files/styles/300x300/public/chanel-gabrielle.jpg' });
+        this.state.producto = 'Perfume Gabrielle Chanel';
+      }
     }
   };
 }
 
 async function uploadAzure(direccion) {                     //BORRAR
-  let apiUrl = 'https://southcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,facialHair,glasses,makeup,emotion&recognitionModel=recognition_01&returnRecognitionModel=false&detectionModel=detection_01';
+  let apiUrl = 'https://southcentralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=age,gender,facialHair,glasses,makeup&recognitionModel=recognition_01&returnRecognitionModel=false&detectionModel=detection_01';
   //console.log(direccion);
   let options = {
     method: 'POST',
