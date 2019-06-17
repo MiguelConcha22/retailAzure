@@ -196,10 +196,7 @@ mirrorImage={this.state.mirrorMode}>
   _sendSMS = async () => {
     const { result } = await SMS.sendSMSAsync('+56991792302', 'Dejar el producto: ' + this.state.producto + ' en la caja: ' + this.state.cajaID);
     console.log('+56991792302', 'Dejar el producto: ' + this.state.producto + ' en la caja: ' + this.state.cajaID);
-    /*const accountSid = 'ACd5976ec505ae8aa6d60ee0524bea50de';
-    const authToken = '6afe992364557f0c3f9ce6ff09bf4172';
-    const sid = 'SK14a0ff78dacc4e3595e79fd31393d8b3';
-    const secret = 'YTBIyWcxYFOa2WY7wtwmWIztdyKdXNiB';
+    /*
     let buff = new Buffer(sid + ':' + secret);
     let base64auth = buff.toString('base64');
 
@@ -212,7 +209,7 @@ mirrorImage={this.state.mirrorMode}>
       to: '+56991792302',
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Basic U0sxNGEwZmY3OGRhY2M0ZTM1OTVlNzlmZDMxMzkzZDhiMzpZVEJJeVdjeFlGT2EyV1k3d3R3bVdJenRkeUtkWE5pQg==',
+        'Authorization': 'Basic '+base64auth,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
     };
