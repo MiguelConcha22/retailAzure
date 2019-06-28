@@ -194,8 +194,8 @@ mirrorImage={this.state.mirrorMode}>
   };
 
   _sendSMS = async () => {
-    const { result } = await SMS.sendSMSAsync('+56991792302', 'Dejar el producto: ' + this.state.producto + ' en la caja: ' + this.state.cajaID);
-    console.log('+56991792302', 'Dejar el producto: ' + this.state.producto + ' en la caja: ' + this.state.cajaID);
+    const { result } = await SMS.sendSMSAsync('numero vendedor', 'Dejar el producto: ' + this.state.producto + ' en la caja: ' + this.state.cajaID);
+    console.log('+569', 'Dejar el producto: ' + this.state.producto + ' en la caja: ' + this.state.cajaID);
     /*
     let buff = new Buffer(sid + ':' + secret);
     let base64auth = buff.toString('base64');
@@ -205,8 +205,8 @@ mirrorImage={this.state.mirrorMode}>
     let options = {
       method: 'POST',
       body: '{"twilioTest"}',
-      from: '+56937610088',
-      to: '+56991792302',
+      from: '+569',
+      to: '+569',
       headers: {
         'Accept': 'application/json',
         'Authorization': 'Basic '+base64auth,
